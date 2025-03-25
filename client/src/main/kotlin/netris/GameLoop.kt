@@ -25,11 +25,14 @@ class GameLoop(
     private val inputDriver: InputDriver,
 ) {
 
-    private val height = 18
-    private val width = 10
-    private val board = Board(width, height, ::randomPiece)
+    private val boardHeight = 18
+    private val boardWidth = 10
+    private val board = Board(boardWidth, boardHeight, ::randomPiece)
 
     private val sideBar = TextCharacter('║', TextColor.ANSI.WHITE, TextColor.ANSI.BLACK)
+    private val bottomLeft = TextCharacter('╚', TextColor.ANSI.WHITE, TextColor.ANSI.BLACK)
+    private val bottomRight = TextCharacter('╝', TextColor.ANSI.WHITE, TextColor.ANSI.BLACK)
+    private val bottomRow = TextCharacter('═', TextColor.ANSI.WHITE, TextColor.ANSI.BLACK)
 
     private val typeSquare = TextCharacter('▒', TextColor.ANSI.YELLOW, TextColor.ANSI.BLACK)
     private val typeStraight = TextCharacter('▒', TextColor.ANSI.YELLOW_BRIGHT, TextColor.ANSI.BLACK)
@@ -41,7 +44,8 @@ class GameLoop(
 
     private val charTypes = listOf(typeSquare, typeStraight, typeSss, typeTee, typeZed, typeEll, typeJay)
 
-    private val paintSync = Object()
+    //private val paintSync = Object()
+
     private val completionCountDownLatch = CountDownLatch(1)
 
     // Call on main thread, blocks until complete.
@@ -57,6 +61,7 @@ class GameLoop(
         inputDriver.disconnect()
     }
 
+    @Synchronized
     private fun tickHandler() {
 
         board.timeTick()
@@ -64,6 +69,7 @@ class GameLoop(
         paint()
     }
 
+    @Synchronized
     private fun inputReceive(i: Input) {
 
         when (i) {
@@ -75,16 +81,21 @@ class GameLoop(
 
             Input.LEFT -> {
 
+                board.tryLeft()
+                paint()
             }
 
             Input.RIGHT -> {
 
+                board.tryRight()
+                paint()
             }
 
             Input.DOWN -> {
 
+                board.tryFallDown()
+                paint()
             }
-
         }
 
         paint()
@@ -92,26 +103,31 @@ class GameLoop(
 
     private fun paint() {
 
-        synchronized(paintSync) {
+        screen.clear()
 
-            screen.clear()
-
-            (0..<height).forEach {
-                screen.setCharacter(0, it, sideBar)
-                screen.setCharacter(width - 1, it, sideBar)
-            }
-
-            // Draw pieces into board offset x=1
-            val xOffset = 1
-            val yOffset = 0
-
-            val drawThese = board.toPointMap()
-
-            drawThese.forEach {
-                screen.setCharacter(xOffset + it.second.x, yOffset + it.second.y, charTypes[it.first])
-            }
-
-            screen.refresh()
+        (0..<boardHeight).forEach {
+            screen.setCharacter(0, it, sideBar)
+            screen.setCharacter(boardWidth + 1, it, sideBar)
         }
+
+        screen.setCharacter(0, boardHeight, bottomLeft)
+        screen.setCharacter(boardWidth + 1, boardHeight, bottomRight)
+
+        (0..<boardWidth).forEach {
+            screen.setCharacter(1 + it, boardHeight, bottomRow)
+        }
+
+
+        // Draw pieces into board offset x=1
+        val xOffset = 1
+        val yOffset = 0
+
+        val drawThese = board.toPointMap()
+
+        drawThese.forEach {
+            screen.setCharacter(xOffset + it.second.x, yOffset + it.second.y, charTypes[it.first])
+        }
+
+        screen.refresh()
     }
 }

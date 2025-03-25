@@ -7,8 +7,8 @@ import java.util.function.Supplier
  * That is when it is done, moved to done pile and a new one created at the top.
  */
 class Board(
-    val width: Int,
-    val height: Int,
+    private val width: Int,
+    private val height: Int,
     private val pieceGenerator: Supplier<Piece>,
 ) {
 
@@ -29,16 +29,22 @@ class Board(
 
     }
 
-    fun tryLeft() {
+    fun tryLeft() = trySingleStepMove(inPlayPiece.leftOne())
 
-    }
-
-    fun tryRight() {
-
-    }
+    fun tryRight() = trySingleStepMove(inPlayPiece.rightOne())
 
     fun tryFallDown() {
 
+    }
+
+    private fun trySingleStepMove(tryNewPiece: Piece) {
+
+        if (isPieceOffBoard(tryNewPiece, width, height) || doesPieceOverlapOthers(tryNewPiece, donePieces)) {
+            // Cannot move it
+            // No change
+        } else {
+            inPlayPiece = tryNewPiece
+        }
     }
 
     fun toPointMap() = (donePieces + inPlayPiece)
