@@ -17,3 +17,11 @@ Learning opportunities:
 * Show myself I can write something myself before one day using engines
 * Explore rendering, hopefully run into problems
 
+# Progression:
+
+After about 8 hours:
+* Left/right/clock tick downing works mostly.
+* Colours, pieces, animation.
+
+![img.png](/history-pics/img0.png)
+
