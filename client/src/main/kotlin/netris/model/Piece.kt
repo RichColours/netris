@@ -37,11 +37,21 @@ data class Piece (
             orientIndex
         )
 
-    fun rotateAntiCw(): Piece {
-        TODO()
-    }
+    fun rotateAntiCw(): Piece =
+        Piece(
+            type,
+            locations.map {
+                it.intRotate(-90, locations[orientIndex])
+            },
+            orientIndex
+        )
 
-    fun rotationCw(): Piece {
-        TODO()
-    }
+    fun rotationCw(): Piece =
+        Piece(
+            type,
+            locations.map {
+                it.intRotate(90, locations[orientIndex])
+            },
+            orientIndex
+        )
 }

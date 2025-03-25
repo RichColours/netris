@@ -1,5 +1,5 @@
 package netris
 
 enum class Input {
-    LEFT, RIGHT, ESCAPE, DOWN
+    LEFT, RIGHT, ESCAPE, DOWN, A, D
 }

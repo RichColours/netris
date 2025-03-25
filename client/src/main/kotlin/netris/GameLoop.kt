@@ -44,15 +44,13 @@ class GameLoop(
 
     private val charTypes = listOf(typeSquare, typeStraight, typeSss, typeTee, typeZed, typeEll, typeJay)
 
-    //private val paintSync = Object()
-
     private val completionCountDownLatch = CountDownLatch(1)
 
     // Call on main thread, blocks until complete.
     fun complete() {
 
         inputDriver.clearAndSetReceive(this::inputReceive)
-        ticker.startPeriodic(Duration.ofMillis(100), this::tickHandler)
+        ticker.startPeriodic(Duration.ofMillis(400), this::tickHandler)
 
         completionCountDownLatch.await()
         println("Exited latch")
@@ -65,8 +63,11 @@ class GameLoop(
     private fun tickHandler() {
 
         board.timeTick()
-
         paint()
+
+        if (board.gameOver) {
+            ticker.stop()
+        }
     }
 
     @Synchronized
@@ -94,6 +95,16 @@ class GameLoop(
             Input.DOWN -> {
 
                 board.tryFallDown()
+                paint()
+            }
+
+            Input.A -> {
+                board.tryRotateAntiCw()
+                paint()
+            }
+
+            Input.D -> {
+                board.tryRotateCw()
                 paint()
             }
         }

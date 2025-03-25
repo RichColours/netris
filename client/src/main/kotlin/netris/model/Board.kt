@@ -1,5 +1,6 @@
 package netris.model
 
+import java.util.*
 import java.util.function.Supplier
 
 /**
@@ -14,6 +15,8 @@ class Board(
 
     private val donePieces = mutableListOf<Piece>()
     private var inPlayPiece: Piece = pieceGenerator.get()
+    private var score = 0
+    var gameOver = false
 
     fun timeTick() {
 
@@ -23,10 +26,16 @@ class Board(
             // Hit the bottom or overlaps with something
             donePieces += inPlayPiece
             inPlayPiece = pieceGenerator.get()
+
+            if (doesPieceOverlapOthers(inPlayPiece, donePieces)) {
+                // New piece is already jammed
+                // Game over
+                gameOver = true
+            }
+
         } else {
             inPlayPiece = oneDown
         }
-
     }
 
     fun tryLeft() = trySingleStepMove(inPlayPiece.leftOne())
@@ -36,6 +45,10 @@ class Board(
     fun tryFallDown() {
 
     }
+
+    fun tryRotateAntiCw() = trySingleStepMove(inPlayPiece.rotateAntiCw())
+
+    fun tryRotateCw() = trySingleStepMove(inPlayPiece.rotationCw())
 
     private fun trySingleStepMove(tryNewPiece: Piece) {
 
