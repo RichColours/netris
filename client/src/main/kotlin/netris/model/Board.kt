@@ -1,6 +1,5 @@
 package netris.model
 
-import java.util.*
 import java.util.function.Supplier
 
 /**
@@ -42,10 +41,6 @@ class Board(
 
     fun tryRight() = trySingleStepMove(inPlayPiece.rightOne())
 
-    fun tryFallDown() {
-
-    }
-
     fun tryRotateAntiCw() = trySingleStepMove(inPlayPiece.rotateAntiCw())
 
     fun tryRotateCw() = trySingleStepMove(inPlayPiece.rotationCw())
@@ -57,6 +52,21 @@ class Board(
             // No change
         } else {
             inPlayPiece = tryNewPiece
+        }
+    }
+
+    fun tryFallDown() {
+
+        while (true) {
+            val downOne = inPlayPiece.downOne()
+
+            if (isPieceOffBoard(downOne, width, height) || doesPieceOverlapOthers(downOne, donePieces)) {
+                // Cannot move it
+                // No change
+                break
+            } else {
+                inPlayPiece = downOne
+            }
         }
     }
 
