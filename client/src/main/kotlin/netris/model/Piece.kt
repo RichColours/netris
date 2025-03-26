@@ -55,3 +55,7 @@ data class Piece (
             orientIndex
         )
 }
+
+fun Piece.toFragments() = this.locations.map {
+    Fragment(this.type, it)
+}

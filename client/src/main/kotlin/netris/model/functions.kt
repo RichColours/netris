@@ -11,11 +11,11 @@ enum class PieceType(
 
     Square(listOf(Coord(0, 0), Coord(1, 0), Coord(1, 1), Coord(0, 1)), 0),
     Straight(listOf(Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(3, 0)), 1),
-    Sss(listOf(Coord(1, 0), Coord(2, 0), Coord(0, 1), Coord(1, 1)), 1),
+    Sss(listOf(Coord(2, 0), Coord(1, 0), Coord(1, 1), Coord(0, 1)), 1),
     Tee(listOf(Coord(0, 0), Coord(0, 1), Coord(0, 2), Coord(1, 1)), 1),
     Zed(listOf(Coord(0, 0), Coord(1, 0), Coord(1, 1), Coord(2, 1)), 1),
-    Ell(listOf(Coord(0, 1), Coord(1, 1), Coord(2, 1), Coord(3, 1), Coord(3, 0)), 2),
-    Jay(listOf(Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(3, 0), Coord(3, 1)), 2)
+    Ell(listOf(Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(0, 1)), 2),
+    Jay(listOf(Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(2, 1)), 2)
     ;
 
 }
@@ -26,11 +26,9 @@ fun randomPiece() = pieceOf(
     PieceType.entries[Random.nextInt(0, PieceType.entries.size)]
 )
 
-fun doesPieceOverlapOthers(thisPiece: Piece, others: List<Piece>) =
-    thisPiece.locations.any {
-        others.flatMap {
-            it.locations
-        }.contains(it)
+fun doesPieceOverlapOthers(thisPiece: Piece, others: List<List<Int?>>) =
+    thisPiece.locations.any { loc ->
+        others[loc.y][loc.x] != null
     }
 
 fun isPieceOffBoard(thisPiece: Piece, width: Int, height: Int) =
@@ -49,3 +47,8 @@ fun Coord.intRotate(deg: Int, origin: Coord): Coord {
 
     return Coord(Math.round(newX).toInt(), Math.round(newY).toInt())
 }
+
+data class Fragment(
+    val type: Int,
+    val location: Coord,
+)

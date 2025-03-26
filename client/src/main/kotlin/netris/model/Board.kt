@@ -12,7 +12,16 @@ class Board(
     private val pieceGenerator: Supplier<Piece>,
 ) {
 
-    private val donePieces = mutableListOf<Piece>()
+    private val doneFragments = mutableListOf<MutableList<Int?>>()
+        .also { v ->
+            (0..<height).forEach { _ ->
+                v.add(mutableListOf<Int?>()
+                    .also { l ->
+                        (0..<width).forEach { l.add(null) }
+                    })
+            }
+        }
+
     private var inPlayPiece: Piece = pieceGenerator.get()
     private var score = 0
     var gameOver = false
@@ -21,12 +30,38 @@ class Board(
 
         val oneDown = inPlayPiece.downOne()
 
-        if (isPieceOffBoard(oneDown, width, height) || doesPieceOverlapOthers(oneDown, donePieces)) {
+        if (isPieceOffBoard(oneDown, width, height) || doesPieceOverlapOthers(oneDown, doneFragments)) {
             // Hit the bottom or overlaps with something
-            donePieces += inPlayPiece
+
+            inPlayPiece.toFragments().forEach {
+                doneFragments[it.location.y][it.location.x] = it.type
+            }
+
+            // Do row deletion and scoring
+            val scoringRows = (0..<height).flatMap { rowIndex ->
+                if (doneFragments[rowIndex].size == width)
+                    listOf(rowIndex)
+                else
+                    emptyList()
+            }
+
+//            if (scoringRows.isNotEmpty()) {
+//                val keepFragmentRows =
+//                    ((0..<scoringRows.size).map { mutableListOf<Fragment>() }
+//                            +
+//                            doneFragments.filterIndexed { index, _ -> index !in scoringRows })
+//                        .mapIndexed { index, row ->
+//                            row.map { f -> Fragment(f.type, Coord(f.location.x, index)) }.toMutableList()
+//                        }.toMutableList()
+//
+//                doneFragments.clear()
+//                scoringRows.indices.forEach { doneFragments.add(mutableListOf()) }
+//                doneFragments.addAll(keepFragmentRows)
+//            }
+
             inPlayPiece = pieceGenerator.get()
 
-            if (doesPieceOverlapOthers(inPlayPiece, donePieces)) {
+            if (doesPieceOverlapOthers(inPlayPiece, doneFragments)) {
                 // New piece is already jammed
                 // Game over
                 gameOver = true
@@ -47,7 +82,7 @@ class Board(
 
     private fun trySingleStepMove(tryNewPiece: Piece) {
 
-        if (isPieceOffBoard(tryNewPiece, width, height) || doesPieceOverlapOthers(tryNewPiece, donePieces)) {
+        if (isPieceOffBoard(tryNewPiece, width, height) || doesPieceOverlapOthers(tryNewPiece, doneFragments)) {
             // Cannot move it
             // No change
         } else {
@@ -60,7 +95,7 @@ class Board(
         while (true) {
             val downOne = inPlayPiece.downOne()
 
-            if (isPieceOffBoard(downOne, width, height) || doesPieceOverlapOthers(downOne, donePieces)) {
+            if (isPieceOffBoard(downOne, width, height) || doesPieceOverlapOthers(downOne, doneFragments)) {
                 // Cannot move it
                 // No change
                 break
@@ -70,12 +105,17 @@ class Board(
         }
     }
 
-    fun toPointMap() = (donePieces + inPlayPiece)
-        .map {
-            val type = it.type
-            it.locations.map {
-                Pair(type, Coord(it.x, it.y))
+    fun toPointMap(): List<Pair<Int, Coord>> {
+
+        val donePieces = doneFragments.mapIndexed { y, ints ->
+            ints.flatMapIndexed { x, i ->
+                if (i == null) emptyList() else listOf(i to Coord(x, y))
             }
-        }
-        .flatten()
+        }.flatten()
+
+        val inPlay = inPlayPiece.toFragments()
+            .map { it.type to Coord(it.location.x, it.location.y) }
+
+        return donePieces + inPlay
+    }
 }
