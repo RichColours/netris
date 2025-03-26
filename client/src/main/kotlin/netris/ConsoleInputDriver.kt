@@ -5,7 +5,7 @@ import com.googlecode.lanterna.screen.Screen
 import java.util.function.Consumer
 
 class ConsoleInputDriver(
-    private val screen: Screen
+    private val screen: Screen,
 ) : InputDriver {
 
     private var receiver: Consumer<Input>? = null
@@ -18,7 +18,9 @@ class ConsoleInputDriver(
 
         pumpingThread = Thread({
             pumper()
+            println("InputDriverPump exiting now!")
         }, "InputDriverPump")
+
 
         pumpingThread!!.start()
     }
@@ -29,8 +31,6 @@ class ConsoleInputDriver(
         if (pumpingThread != null) {
 
             receiver = null
-            pumpingThread!!.interrupt()
-
             pumpingThread = null
         }
     }

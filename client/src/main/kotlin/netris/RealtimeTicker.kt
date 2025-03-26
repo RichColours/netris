@@ -27,5 +27,6 @@ class RealtimeTicker : Ticker {
     override fun stop() {
         currentScheduledFuture!!.cancel(false)
         currentScheduledFuture = null
+        ses.shutdownNow()
     }
 }
