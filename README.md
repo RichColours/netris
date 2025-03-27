@@ -38,5 +38,6 @@ After about 8 hours:
 ![img.png](/history-pics/img0.png)
 
 Impressive breakage while developing the row scoring:
+
 ![img.png](/history-pics/img1.png)
 
