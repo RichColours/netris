@@ -1,11 +1,12 @@
 package netris
 
+import java.io.Closeable
 import java.time.Duration
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class RealtimeTicker : Ticker {
+class RealtimeTicker : Ticker, Closeable {
 
     private val ses = Executors.newSingleThreadScheduledExecutor()
 
@@ -27,6 +28,9 @@ class RealtimeTicker : Ticker {
     override fun stop() {
         currentScheduledFuture!!.cancel(false)
         currentScheduledFuture = null
+    }
+
+    override fun close() {
         ses.shutdownNow()
     }
 }

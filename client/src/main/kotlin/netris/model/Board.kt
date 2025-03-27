@@ -23,7 +23,7 @@ class Board(
             }
         }
 
-    private var inPlayPiece: Piece = pieceGenerator.get()
+    private var inPlayPiece: Piece = newCentralisedPiece()
     private var score = 0
     var gameOver = false
 
@@ -48,7 +48,7 @@ class Board(
                     emptyList()
             }
 
-            val newBlankRows = scoringRows.size.of { width.of { null as Int? }.toMutableList() }.toList()
+            val newBlankRows = scoringRows.size.of { newBlankRow() }.toList()
 
             val keepNonFullRows = doneFragments.filterIndexed { index, _ -> index !in scoringRows }
 
@@ -62,7 +62,7 @@ class Board(
 
             score += scoringRows.size
 
-            inPlayPiece = pieceGenerator.get()
+            inPlayPiece = newCentralisedPiece()
 
             if (doesPieceOverlapOthers(inPlayPiece, doneFragments)) {
                 // New piece is already jammed
@@ -120,5 +120,14 @@ class Board(
             .map { it.type to Coord(it.location.x, it.location.y) }
 
         return donePieces + inPlay
+    }
+
+    private fun newBlankRow() = width.of { null as Int? }.toMutableList()
+
+    private fun newCentralisedPiece(): Piece {
+        val p = pieceGenerator.get()
+
+        return (0..<(width / 2) - 2)
+            .fold(p) { a, b -> a.rightOne() }
     }
 }

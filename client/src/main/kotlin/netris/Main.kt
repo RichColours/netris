@@ -19,11 +19,12 @@ class Main {
             val ticker = RealtimeTicker()
             val inputDriver = ConsoleInputDriver(screen)
 
-            val gameLoop = GameLoop(ticker, screen, inputDriver)
-            gameLoop.complete() // Blocks until game completes
+            ticker.use {
+                val gameLoop = GameLoop(ticker, screen, inputDriver)
+                gameLoop.complete() // Blocks until game completes
+            }
 
             screen.stopScreen(true)
-
         }
     }
 }
