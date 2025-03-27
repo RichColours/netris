@@ -14,8 +14,8 @@ enum class PieceType(
     Sss(listOf(Coord(2, 0), Coord(1, 0), Coord(1, 1), Coord(0, 1)), 1),
     Tee(listOf(Coord(0, 0), Coord(0, 1), Coord(0, 2), Coord(1, 1)), 1),
     Zed(listOf(Coord(0, 0), Coord(1, 0), Coord(1, 1), Coord(2, 1)), 1),
-    Ell(listOf(Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(0, 1)), 0),
-    Jay(listOf(Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(2, 1)), 2)
+    Ell(listOf(Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(0, 1)), 1),
+    Jay(listOf(Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(2, 1)), 1)
     ;
 
 }
