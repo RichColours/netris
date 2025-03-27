@@ -62,12 +62,17 @@ class GameLoop(
     @Synchronized
     private fun tickHandler() {
 
-        board.timeTick()
-        paint()
+        try {
+            board.timeTick()
+            paint()
 
-        if (board.gameOver) {
-            ticker.stop()
+            if (board.gameOver) {
+                ticker.stop()
+            }
+        } catch (e: Exception) {
+            throw e
         }
+
     }
 
     @Synchronized
@@ -81,19 +86,16 @@ class GameLoop(
             }
 
             Input.LEFT -> {
-
                 board.tryLeft()
                 paint()
             }
 
             Input.RIGHT -> {
-
                 board.tryRight()
                 paint()
             }
 
             Input.DOWN -> {
-
                 board.tryFallDown()
                 paint()
             }
@@ -109,7 +111,7 @@ class GameLoop(
             }
         }
 
-        paint()
+        //paint()
     }
 
     private fun paint() {

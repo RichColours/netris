@@ -1,5 +1,6 @@
 package netris.model
 
+import netris.of
 import java.util.function.Supplier
 
 /**
@@ -34,30 +35,32 @@ class Board(
             // Hit the bottom or overlaps with something
 
             inPlayPiece.toFragments().forEach {
+                if (doneFragments[it.location.y][it.location.x] != null)
+                    throw Exception("Serious issue, this slot should be null to receive the new fragment")
                 doneFragments[it.location.y][it.location.x] = it.type
             }
 
             // Do row deletion and scoring
             val scoringRows = (0..<height).flatMap { rowIndex ->
-                if (doneFragments[rowIndex].size == width)
+                if (doneFragments[rowIndex].all { it != null })
                     listOf(rowIndex)
                 else
                     emptyList()
             }
 
-//            if (scoringRows.isNotEmpty()) {
-//                val keepFragmentRows =
-//                    ((0..<scoringRows.size).map { mutableListOf<Fragment>() }
-//                            +
-//                            doneFragments.filterIndexed { index, _ -> index !in scoringRows })
-//                        .mapIndexed { index, row ->
-//                            row.map { f -> Fragment(f.type, Coord(f.location.x, index)) }.toMutableList()
-//                        }.toMutableList()
-//
-//                doneFragments.clear()
-//                scoringRows.indices.forEach { doneFragments.add(mutableListOf()) }
-//                doneFragments.addAll(keepFragmentRows)
-//            }
+            val newBlankRows = scoringRows.size.of { width.of { null as Int? }.toMutableList() }.toList()
+
+            val keepNonFullRows = doneFragments.filterIndexed { index, _ -> index !in scoringRows }
+
+            val newFragments: List<MutableList<Int?>> = (newBlankRows + keepNonFullRows).toMutableList()
+
+            if (scoringRows.isNotEmpty())
+                println("test")
+
+            doneFragments.clear()
+            doneFragments.addAll(newFragments)
+
+            score += scoringRows.size
 
             inPlayPiece = pieceGenerator.get()
 
