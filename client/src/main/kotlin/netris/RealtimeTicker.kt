@@ -31,6 +31,9 @@ class RealtimeTicker : Ticker, Closeable {
     }
 
     override fun close() {
+
+        if (currentScheduledFuture != null)
+            throw Exception("Periodic started task has not been stopped - this indicates unclean usage")
         ses.shutdownNow()
     }
 }
