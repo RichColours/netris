@@ -17,7 +17,7 @@ Learning opportunities:
 * Show myself I can write something myself before one day using engines
 * Explore rendering, hopefully run into problems
 
-# Progression:
+## Evolution:
 
 After about 8 hours:
 * Left/right/clock tick downing works mostly.
@@ -25,5 +25,6 @@ After about 8 hours:
 
 ![img.png](/history-pics/img0.png)
 
-Impressive breakage developing the row scoring:
+Impressive breakage while developing the row scoring:
 ![img.png](/history-pics/img1.png)
+
