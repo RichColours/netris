@@ -41,3 +41,6 @@ Impressive breakage while developing the row scoring:
 
 ![img.png](/history-pics/img1.png)
 
+Welcome screen using neat animation system:
+![img2.gif](history-pics/img2.gif)
+
