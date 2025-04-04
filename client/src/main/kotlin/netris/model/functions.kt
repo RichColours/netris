@@ -48,6 +48,8 @@ fun Coord.intRotate(deg: Int, origin: Coord): Coord {
     return Coord(Math.round(newX).toInt(), Math.round(newY).toInt())
 }
 
+operator fun Coord.plus(distance: Coord) = Coord(this.x + distance.x, this.y + distance.y)
+
 data class Fragment(
     val type: Int,
     val location: Coord,

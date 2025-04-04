@@ -13,6 +13,12 @@ class Board(
     private val pieceGenerator: Supplier<Piece>,
 ) {
 
+    private val tickMs = 50
+    private val levelIntervals = listOf(
+        500, 450, 400, 350, 300,
+        250, 200, 150, 100, 50
+    )
+
     private val doneFragments = mutableListOf<MutableList<Int?>>()
         .also { v ->
             (0..<height).forEach { _ ->
@@ -24,10 +30,19 @@ class Board(
         }
 
     private var inPlayPiece: Piece = newCentralisedPiece()
-    private var score = 0
+    var score = 0
+    var level = 0
+    var linesInLevel = 0
+    private val linesToChangeLevel = 10
+    private var tickDivisor = levelIntervals[level] / tickMs
+    private var ticking = 0
     var gameOver = false
 
     fun timeTick() {
+        ticking += 1
+        if (ticking != tickDivisor)
+            return
+        ticking = 0
 
         val oneDown = inPlayPiece.downOne()
 
@@ -60,7 +75,15 @@ class Board(
             doneFragments.clear()
             doneFragments.addAll(newFragments)
 
-            score += scoringRows.size
+            //score += scoringRows.size
+            linesInLevel += scoringRows.size
+
+            if (linesInLevel >= linesToChangeLevel) {
+                linesInLevel = 0 // Deliberately losing any remainder
+                level += 1
+                ticking = 0
+                tickDivisor = levelIntervals[level] / tickMs
+            }
 
             inPlayPiece = newCentralisedPiece()
 
@@ -68,6 +91,7 @@ class Board(
                 // New piece is already jammed
                 // Game over
                 gameOver = true
+                println("game=over")
             }
 
         } else {
@@ -82,6 +106,10 @@ class Board(
     fun tryRotateAntiCw() = trySingleStepMove(inPlayPiece.rotateAntiCw())
 
     fun tryRotateCw() = trySingleStepMove(inPlayPiece.rotationCw())
+
+    fun tryDown() {
+
+    }
 
     private fun trySingleStepMove(tryNewPiece: Piece) {
 

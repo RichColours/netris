@@ -49,6 +49,7 @@ class ConsoleInputDriver(
                     ks.keyType == KeyType.ArrowDown -> receiver!!.accept(Input.DOWN)
                     ks.character == 'a' -> receiver!!.accept(Input.A)
                     ks.character == 'd' -> receiver!!.accept(Input.D)
+                    ks.character == 's' -> receiver!!.accept(Input.S)
                 }
 
             } catch (e: InterruptedException) {

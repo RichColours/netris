@@ -20,8 +20,12 @@ class Main {
             val inputDriver = ConsoleInputDriver(screen)
 
             ticker.use {
+
+                val welcome = WelcomeLoop(ticker, screen, inputDriver)
+                welcome.complete()
+
                 val gameLoop = GameLoop(ticker, screen, inputDriver)
-                gameLoop.complete() // Blocks until game completes
+                gameLoop.complete()
             }
 
             screen.stopScreen(true)
