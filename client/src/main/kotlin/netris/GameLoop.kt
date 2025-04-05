@@ -37,7 +37,7 @@ class GameLoop(
 
     private val typeSquare = TextCharacter('▒', TextColor.ANSI.YELLOW, TextColor.ANSI.BLACK)
     private val typeStraight = TextCharacter('▒', TextColor.ANSI.YELLOW_BRIGHT, TextColor.ANSI.BLACK)
-    private val typeSss = TextCharacter('▒', TextColor.ANSI.BLUE, TextColor.ANSI.BLACK)
+    private val typeSss = TextCharacter('▒', TextColor.ANSI.CYAN, TextColor.ANSI.BLACK)
     private val typeTee = TextCharacter('▒', TextColor.ANSI.GREEN, TextColor.ANSI.BLACK)
     private val typeZed = TextCharacter('▒', TextColor.ANSI.WHITE_BRIGHT, TextColor.ANSI.BLACK)
     private val typeEll = TextCharacter('▒', TextColor.ANSI.RED_BRIGHT, TextColor.ANSI.BLACK)
@@ -158,7 +158,19 @@ class GameLoop(
         val tcLevel = TextCharacter.fromString("Level ${board.level}")
         val tcLines = TextCharacter.fromString("Lines ${board.linesInLevel}")
 
-        screen.setCharacter(orientOffset.x + boardWidth + 2, orientOffset.y + 2, TextCharacter('s'))
+        tcScore.forEachIndexed { index, textCharacter ->
+            screen.setCharacter(orientOffset.x + boardWidth + 3 + index, orientOffset.y + 1, textCharacter)
+        }
+
+        tcLevel.forEachIndexed { index, textCharacter ->
+            screen.setCharacter(orientOffset.x + boardWidth + 3 + index, orientOffset.y + 3, textCharacter)
+        }
+
+        tcLines.forEachIndexed { index, textCharacter ->
+            screen.setCharacter(orientOffset.x + boardWidth + 3 + index, orientOffset.y + 5, textCharacter)
+        }
+
+
 
         screen.refresh()
     }
