@@ -26,6 +26,9 @@ class Main {
 
                 val gameLoop = GameLoop(ticker, screen, inputDriver)
                 gameLoop.complete()
+
+                val gameOverLoop = GameOverLoop(ticker, screen, inputDriver)
+                gameOverLoop.complete()
             }
 
             screen.stopScreen(true)

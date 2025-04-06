@@ -1,6 +1,6 @@
 package netris.model
 
-data class MutableCoord(
-    var x: Int,
-    var y: Int
-)
+class MutableCoord(
+    override var x: Int,
+    override var y: Int
+) : Coord(x, y)

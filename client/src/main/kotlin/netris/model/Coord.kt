@@ -1,6 +1,6 @@
 package netris.model
 
-data class Coord(
-    val x: Int,
-    val y: Int
+open class Coord(
+    open val x: Int,
+    open val y: Int
 )
